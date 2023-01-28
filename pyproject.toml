@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "clicks-and-cookies"
+version = "0.1.0"
+description = "django link in bio app with clicks and cookies"
+authors = ["flapjackstan <elm.s.camargo@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+packages = [{include = "clicks_and_cookies"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.1.5"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
