@@ -1,0 +1,9 @@
+{% if items_list %}
+    <ul>
+    {% for item in items_list %}
+        <li><a href="{{ item.item_contents.test }}/"> Python Dictionary {{ item.item_contents }} and how to access {{ item.item_contents.test }} and {{item.item_display_text}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No links available.</p>
+{% endif %}
