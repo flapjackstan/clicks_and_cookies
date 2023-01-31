@@ -5,3 +5,5 @@ class listItems(models.Model):
     item_type = models.CharField(max_length=200)
     item_contents = models.JSONField()
 
+    def __str__(self):
+        return self.item_display_text
