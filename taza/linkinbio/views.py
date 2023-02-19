@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import listItems
 from django.template import loader
+import sys
 
 # import view sets from the REST framework
 from rest_framework import viewsets
@@ -10,28 +11,6 @@ from .serializers import listItemsSerializer
 
 # https://docs.djangoproject.com/en/4.1/ref/request-response/#django.http.HttpResponse
 from django.http import HttpResponse
-
-# def index(request):
-
-#     print("REQUEST START")
-#     print(request.headers)
-#     print(request.META)
-
-#     items = listItems.objects.all()
-
-#     template = loader.get_template('linkinbio/index.html')
-
-#     context = {
-#         'items_list': items
-#     }
-
-#     response = HttpResponse(template.render(context, request))
-
-#     # print("RESPONSE START")
-#     # print(response.headers)
-#     return response
-
-
 
 # create a class for the Todo model viewsets
 class listItemsView(viewsets.ModelViewSet):
@@ -43,3 +22,12 @@ class listItemsView(viewsets.ModelViewSet):
     # define a variable and populate it
     # with the Todo list objects
     queryset = listItems.objects.all()
+
+    print("RESPONSE START")
+
+    print(response.__dict__, file=sys.stderr)
+
+    print("RESPONSE END")
+    # print(response.headers)
+    return response
+
