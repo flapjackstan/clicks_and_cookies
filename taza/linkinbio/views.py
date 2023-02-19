@@ -3,29 +3,25 @@ from .models import listItems
 from django.template import loader
 import sys
 
+# import view sets from the REST framework
+from rest_framework import viewsets
+
+# import the TodoSerializer from the serializer file
+from .serializers import listItemsSerializer
+
 # https://docs.djangoproject.com/en/4.1/ref/request-response/#django.http.HttpResponse
 from django.http import HttpResponse
 
-def index(request):
-
-    print("REQUEST START")
-
-    print(request.__dict__, file=sys.stderr)
-
-    print("REQUEST END")
-
-    print("REQUEST IP")
-    print(request.META.get("REMOTE_ADDR"))
-
-    items = listItems.objects.all()
-
-    template = loader.get_template('linkinbio/index.html')
-
-    context = {
-        'items_list': items
-    }
-
-    response = HttpResponse(template.render(context, request))
+# create a class for the Todo model viewsets
+class listItemsView(viewsets.ModelViewSet):
+ 
+    # create a serializer class and
+    # assign it to the TodoSerializer class
+    serializer_class = listItemsSerializer
+ 
+    # define a variable and populate it
+    # with the Todo list objects
+    queryset = listItems.objects.all()
 
     print("RESPONSE START")
 
@@ -34,3 +30,4 @@ def index(request):
     print("RESPONSE END")
     # print(response.headers)
     return response
+

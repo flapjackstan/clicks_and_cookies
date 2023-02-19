@@ -77,3 +77,6 @@ ENV/
 
 # Spyder project settings
 .spyproject
+
+# node_modules
+taza/node_modules/*
