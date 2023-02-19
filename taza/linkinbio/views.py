@@ -23,11 +23,3 @@ class listItemsView(viewsets.ModelViewSet):
     # with the Todo list objects
     queryset = listItems.objects.all()
 
-    print("RESPONSE START")
-
-    print(response.__dict__, file=sys.stderr)
-
-    print("RESPONSE END")
-    # print(response.headers)
-    return response
-
