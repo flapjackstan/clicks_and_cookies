@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 # import views from todo
-from linkinbio import views
+from linkinbio import views as linkinbioview
+from clicks import views as clicksview
 
 # import routers from the REST framework
 # it is necessary for routing
@@ -27,8 +28,8 @@ from rest_framework import routers
 router = routers.DefaultRouter()
  
 # register the router
-router.register(r'tasks',views.listItemsView, 'task')
-
+router.register(r'tasks',linkinbioview.listItemsView, 'task')
+router.register(r'clicks',clicksview.ClicksView, 'click')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
