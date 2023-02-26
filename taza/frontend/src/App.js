@@ -14,12 +14,13 @@ class App extends React.Component {
     this.state = {
       tazaMessage:null,
       tazaAnnouncement:null, 
-      tazaTitle:null
+      tazaTitle:null,
+      clientIpV4:"",
+      clientCity:""
     };
   }
 
-  //TODO add description 
-  componentDidMount() {
+  getTasksForFrontend() {
     axios
     .get('http://localhost:8000/api/tasks/')
     .then((response) => {
@@ -32,7 +33,9 @@ class App extends React.Component {
     .catch((error) => {
        console.log("Error fetching Django Database: " + error);
     });
-    
+  }
+
+  getGeoLocationOfUser() {
     axios
     .get('https://geolocation-db.com/json/')
     .then((response) => {
@@ -44,11 +47,32 @@ class App extends React.Component {
     });
   }
 
+  handleClicks = (ip,city,component) => () => {
+    if (city == null){
+      city="CNG"
+      console.log("City is null, could not gather with geo-location. This is not an issue");
+    }
+      
+    axios.post("http://127.0.0.1:8000/api/clicks/", 
+    {user_ipv4: ip, user_city: city, component:component}
+   )
+   .then((response) => {
+     console.log(response);
+   });
+  };
+  
+  componentDidMount() {
+    this.getTasksForFrontend()
+    this.getGeoLocationOfUser()
+  }
+
   //TODO split components into their own json file
   render() {
     const {tazaMessage} = this.state;
     const {tazaAnnouncement} = this.state;
     const {tazaTitle} = this.state;
+    const {clientIpV4} = this.state;
+    const {clientCity} = this.state;
     return (
       <body>
         <img src={taza_logo} alt="profile picturee" class="profile-picture-class"/>
@@ -57,8 +81,8 @@ class App extends React.Component {
           <p class="profile-name-subtxt">{tazaMessage}</p>
           <p>{tazaAnnouncement}</p>
         </div>
-        <a href="https://www.instagram.com/taza.de.cafe.la/?igshid=YWJhMjlhZTc%3D" target="_blank" class="links">Instagram</a>
-        <a href="https://account.venmo.com/u/tazacafe" target="_blank" class="links">Venmo</a>
+        <a href="https://www.instagram.com/taza.de.cafe.la/?igshid=YWJhMjlhZTc%3D" target="_blank" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"Instagram")}>Instagram</a>
+        <a href="https://account.venmo.com/u/tazacafe" target="_blank" class="links"onClick={this.handleClicks(clientIpV4,clientCity,"Venmo")}>Venmo</a>
         <a href="#" class="links">Upcoming Events</a>
         <a href="#" class="links">Join our email chain</a>
         <a href="#" class="links">Contact us</a>
