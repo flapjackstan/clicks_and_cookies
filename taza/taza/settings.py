@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "linkinbio.apps.LinkinbioConfig",
+    "clicks",
     "corsheaders",
     "rest_framework",
 ]
