@@ -8,7 +8,7 @@ import twitter_logo from './assets/twitterLogo_bnw.jpg'
 // import Component from the react module
 // import Modal from "./components/Modal";
 import axios from 'axios'; 
-const tazaFrontPageInfo = 2;
+const tazaFrontPageInfo = 0;
 class App extends React.Component {
   constructor(props){
     super(props);
