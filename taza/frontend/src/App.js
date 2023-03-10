@@ -1,8 +1,9 @@
 import "./App.css";
 import React, { Component } from "react";
 import taza_logo from './assets/profilePic.jpg'
-import insta_logo from './assets/instagramLogo.jpg'
-import venmo_logo from './assets/venmoLogo.jpg'
+import insta_logo from './assets/instagramLogo_bnw.jpg'
+import venmo_logo from './assets/venmoLogo_bnw.jpg'
+import twitter_logo from './assets/twitterLogo_bnw.jpg'
 
 // import Component from the react module
 // import Modal from "./components/Modal";
@@ -15,9 +16,28 @@ class App extends React.Component {
       tazaMessage:null,
       tazaAnnouncement:null, 
       tazaTitle:null,
-      clientIpV4:"",
-      clientCity:""
+      clientIpV4:null,
+      clientCity:null,
     };
+  }
+
+
+  handleSubscriptionChange = dataSource => {
+    this.setState({
+      hi: dataSource.value,
+    });
+  }
+
+  getUserLocationFromAPI = () => {
+    //Maybe put in .env? // maybe not if frontend and backend will be seperated.
+    const apiKey = '85a7c40fdc8e4a69ba97e1630d3515fa';
+    axios.get('https://ipgeolocation.abstractapi.com/v1/?api_key=' + apiKey)
+        .then(response => {
+          this.setState({clientIpV4:response.data.ip_address, clientCity:response.data.city});
+        })
+        .catch(error => {
+            console.log("Error fetching geo-location: " + error);
+        });
   }
 
   getTasksForFrontend() {
@@ -32,18 +52,6 @@ class App extends React.Component {
     })
     .catch((error) => {
        console.log("Error fetching Django Database: " + error);
-    });
-  }
-
-  getGeoLocationOfUser() {
-    axios
-    .get('https://geolocation-db.com/json/')
-    .then((response) => {
-      //This may change, inorder to POST data
-      this.setState({clientIpV4:response.data.IPv4, clientCity:response.data.city});
-    })
-    .catch((error) => {
-       console.log("Error fetching geo-location: " + error);
     });
   }
 
@@ -63,7 +71,23 @@ class App extends React.Component {
   
   componentDidMount() {
     this.getTasksForFrontend()
-    this.getGeoLocationOfUser()
+    this.getUserLocationFromAPI()
+  }
+  
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.clientIpV4 != prevProps.clientIpV4) 
+      {
+        if (this.state.clientCity == null){
+          this.state.clientCity ="CNG"
+          console.log("City is null, could not gather with geo-location. This is not an issue");
+        }
+            //TODO update with calling handleClicks()
+            axios.post("http://127.0.0.1:8000/api/clicks/", 
+            {user_ipv4: this.state.clientIpV4, user_city: this.state.clientCity, component:"TazaHome"})
+            .then((response) => {
+              console.log(response);
+            });
+     }
   }
 
   //TODO split components into their own json file
@@ -73,6 +97,8 @@ class App extends React.Component {
     const {tazaTitle} = this.state;
     const {clientIpV4} = this.state;
     const {clientCity} = this.state;
+
+
     return (
       <body>
         <img src={taza_logo} alt="profile picturee" class="profile-picture-class"/>
@@ -81,15 +107,29 @@ class App extends React.Component {
           <p class="profile-name-subtxt">{tazaMessage}</p>
           <p>{tazaAnnouncement}</p>
         </div>
-        <a href="https://www.instagram.com/taza.de.cafe.la/?igshid=YWJhMjlhZTc%3D" target="_blank" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"Instagram")}>Instagram</a>
-        <a href="https://account.venmo.com/u/tazacafe" target="_blank" class="links"onClick={this.handleClicks(clientIpV4,clientCity,"Venmo")}>Venmo</a>
-        <a href="#" class="links">Upcoming Events</a>
+        <a href="#" target="_blank" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"See Menu")}>Menu</a>
+        <a href="#" target="_blank" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"L+H")}>Location & Hours</a>
+        <a href="#" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"Upcoming Events")}>Upcoming Events</a>
         <a href="#" class="links">Join our email chain</a>
         <a href="#" class="links">Contact us</a>
-        <div class="bottom-text-class">Trinklee</div>
-        {/* TODO - Have images in links or insert button imange in bottom of page
-        <img data-testid="LinkThumbnailImage" src={insta_logo} alt="" filter="" loading="lazy" crossorigin="" class="profile-picture-class"></img>
-        <img data-testid="LinkThumbnailImage" src={venmo_logo} alt="" filter="" loading="lazy" crossorigin="" class="profile-picture-class"></img> */}
+        <a href="#" class="links" onClick={this.handleClicks(clientIpV4,clientCity,"Founders")}>Meet the founders</a>
+        <div class="bottom-text-class">TazaParaTi</div>
+
+
+        <div class="social-media-block">
+
+          <a href="https://www.instagram.com/taza.de.cafe.la/?igshid=YWJhMjlhZTc%3D" target="_blank" rel="noreferrer" class="social-media-links" onClick={this.handleClicks(clientIpV4,clientCity,"Instagram")}>
+            <img data-testid="LinkThumbnailImage" src={insta_logo} alt="" filter="" loading="lazy" crossorigin="" class="logo-class"></img>
+          </a>
+          <a href="https://account.venmo.com/u/tazacafe" target="_blank" class="social-media-links" rel="noreferrer" onClick={this.handleClicks(clientIpV4,clientCity,"Venmo")}>
+            <img data-testid="LinkThumbnailImage" src={venmo_logo} alt="" filter="" loading="lazy" crossorigin="" class="logo-class"></img>
+          </a>
+          <a href="https://twitter.com" target="_blank" class="social-media-links" rel="noreferrer" onClick={this.handleClicks(clientIpV4,clientCity,"Twitter")}>
+            <img data-testid="LinkThumbnailImage" src={twitter_logo} alt="" filter="" loading="lazy" crossorigin="" class="logo-class"></img>
+          </a>
+
+        </div>
+
       </body>
     );
   }
